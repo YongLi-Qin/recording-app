@@ -10,7 +10,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Link, useLocation } from "react-router-dom";
 
-// icons
+// Icons
 import SettingsIcon from "@mui/icons-material/Settings";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PeopleIcon from "@mui/icons-material/People";
@@ -64,7 +64,7 @@ const Navbar = () => {
           </MenuItem>
         </Menu>
 
-        {/* name of the app */}
+        {/* Name of the app */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="h7" component="div">
             Lyrebird Recording App
@@ -105,7 +105,7 @@ const Navbar = () => {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        {/* sign out */}
+        {/* Sign out */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="body1">Hi YongLi</Typography>
           <Button variant="outlined" color="inherit">

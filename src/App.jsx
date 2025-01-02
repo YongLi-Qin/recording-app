@@ -4,9 +4,10 @@ import Navbar from "./components/Navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./theme"; 
+import ConsultPage from "./pages/ConsultPage";
 
 
-const ConsultPage = () => <h1>Other Mode Page</h1>;
+
 const OtherModePage = () => <h1>Other Mode Page</h1>;
 const SettingsPage = () => <h1>Settings Page</h1>;
 
