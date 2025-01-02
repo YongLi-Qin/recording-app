@@ -13,11 +13,11 @@ const ConsultPage = () => {
   const [showSummary, setShowSummary] = useState(false); // To toggle between NoteTaking and ConsultSummary
 
   const handleRecordingTimeUpdate = (time) => {
-    setRecordingTime(time); // Update recording time
+    setRecordingTime(time);
   };
 
   const handleNotesUpdate = (newNotes) => {
-    setNotes(newNotes); // Update notes from NoteTaking
+    setNotes(newNotes);
   };
 
   const handleStopRecording = () => {
@@ -26,6 +26,12 @@ const ConsultPage = () => {
       setIsGenerating(false); // Hide loading animation
       setShowSummary(true); // Show ConsultSummary
     }, 2000); // Simulate loading delay
+  };
+
+  const handleResetRecording = () => {
+    setNotes([]); // Clear notes
+    setRecordingTime("00:00"); // Reset recording time
+    setShowSummary(false); // Show NoteTaking
   };
 
   return (
@@ -84,6 +90,7 @@ const ConsultPage = () => {
           <RecordingControl
             onTimeUpdate={handleRecordingTimeUpdate}
             onStop={handleStopRecording}
+            onReset={handleResetRecording} // Add reset callback
           />
           <PatientInformation />
         </Box>
@@ -99,9 +106,9 @@ const ConsultPage = () => {
         >
           {showSummary ? (
             <ConsultSummary
-              notes={notes} // Pass notes to ConsultSummary
+              notes={notes}
               sx={{
-                minWidth: "900px",
+                minWidth: "800px",
                 minHeight: "600px",
                 border: "1px solid #ddd",
                 borderRadius: "10px",
@@ -110,8 +117,8 @@ const ConsultPage = () => {
             />
           ) : (
             <NoteTaking
-              currentRecordingTime={recordingTime} // Pass recording time to NoteTaking
-              onNotesUpdate={handleNotesUpdate} // Correct callback for notes update
+              currentRecordingTime={recordingTime}
+              onNotesUpdate={handleNotesUpdate}
               sx={{
                 minWidth: "800px",
                 minHeight: "600px",

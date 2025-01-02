@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaPlay, FaStop } from "react-icons/fa"; // Using react-icons for play and stop icons
+import { FaPlay, FaStop, FaPause } from "react-icons/fa"; // Using react-icons for play, stop, and pause icons
 import { Box, TextField, Typography, Button } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 
-const RecordingControl = ({ onTimeUpdate, onStop }) => {
+const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
   const [isRecording, setIsRecording] = useState(false); // Indicates if recording is active
+  const [isStopped, setIsStopped] = useState(false); // Indicates if recording is stopped
+  const [isPaused, setIsPaused] = useState(false); // Indicates if recording is paused
   const [devices, setDevices] = useState([]); // List of available audio input devices
   const [selectedDevice, setSelectedDevice] = useState(""); // Selected audio input device
   const [volume, setVolume] = useState(0); // Current volume level
@@ -52,6 +54,8 @@ const RecordingControl = ({ onTimeUpdate, onStop }) => {
 
       mediaRecorder.start();
       setIsRecording(true);
+      setIsStopped(false);
+      setIsPaused(false);
 
       // Start recording timer
       timerRef.current = setInterval(() => {
@@ -85,19 +89,53 @@ const RecordingControl = ({ onTimeUpdate, onStop }) => {
       audioContextRef.current.close();
       cancelAnimationFrame(animationFrameIdRef.current);
       setIsRecording(false);
+      setIsStopped(true);
       setVolume(0);
       clearInterval(timerRef.current);
-  
+
       if (onTimeUpdate) {
         onTimeUpdate("00:00");
       }
-  
-      // Ensure the onStop callback is called correctly
+
+      // Notify parent component that recording has stopped
       if (onStop) {
-        onStop(); // Notify parent component
+        onStop();
       }
     }
   };
+
+  // Reset recording state
+  const resetRecording = () => {
+    setRecordingTime(0);
+    setIsStopped(false);
+    setIsPaused(false);
+    if (onReset) {
+      onReset();
+    }
+  };
+
+  // Pause recording
+  const pauseRecording = () => {
+    setIsPaused(true);
+    clearInterval(timerRef.current);
+    mediaRecorderRef.current?.pause();
+  };
+
+  // Resume recording
+  const resumeRecording = () => {
+    setIsPaused(false);
+    mediaRecorderRef.current?.resume();
+    timerRef.current = setInterval(() => {
+      setRecordingTime((prevTime) => {
+        const newTime = prevTime + 1;
+        if (onTimeUpdate) {
+          onTimeUpdate(formatTime(newTime)); // Update parent component with formatted time
+        }
+        return newTime;
+      });
+    }, 1000);
+  };
+
   // Format time from seconds to "MM:SS" format
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -123,16 +161,27 @@ const RecordingControl = ({ onTimeUpdate, onStop }) => {
 
       {/* Recording button and timer display */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-        <Button
-          onClick={isRecording ? stopRecording : startRecording}
-          variant="contained"
-          color={isRecording ? "error" : "primary"}
-          startIcon={isRecording ? <FaStop /> : <FaPlay />}
-          sx={{ width: "200px" }}
-        >
-          {isRecording ? "End Recording" : "Start Recording"}
-        </Button>
-        <Typography variant="body1">{isRecording ? formatTime(recordingTime) : "00:00"}</Typography>
+        <Box sx={{ display: "flex", gap: "10px" }}>
+          <Button
+            onClick={isStopped ? resetRecording : isRecording ? stopRecording : startRecording}
+            variant="contained"
+            color={isStopped ? "success" : isRecording ? "error" : "primary"}
+            startIcon={isRecording ? <FaStop /> : <FaPlay />}
+          >
+            {isStopped ? "New Recording" : isRecording ? "End Recording" : "Start Recording"}
+          </Button>
+          {isRecording && !isStopped && (
+            <Button
+              onClick={isPaused ? resumeRecording : pauseRecording}
+              variant="contained"
+              color="warning"
+              startIcon={isPaused ? <FaPlay /> : <FaPause />}
+            >
+              {isPaused ? "Resume" : "Pause"}
+            </Button>
+          )}
+        </Box>
+        <Typography variant="body1">{formatTime(recordingTime)}</Typography>
       </Box>
 
       {/* Volume display */}
