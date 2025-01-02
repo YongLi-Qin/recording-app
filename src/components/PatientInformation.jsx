@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { TextField, Button, MenuItem, Select, FormControl, InputLabel, Box, Typography } from "@mui/material";
+import { Autocomplete, TextField, Button, MenuItem, Select, FormControl, InputLabel, Box, Typography } from "@mui/material";
 
 const PatientInformation = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredPatients, setFilteredPatients] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedPatient, setSelectedPatient] = useState("");
   const [gender, setGender] = useState("");
 
-  // Hard code patiens
+    /* Hardcode patients' name */
   const patients = [
     "Matt L",
     "Jim H",
@@ -21,77 +19,42 @@ const PatientInformation = () => {
     "Chris R",
   ];
 
-  // Fuzzy Search
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.trim() === "") {
-      setFilteredPatients([]);
-      return;
-    }
-
-    const results = patients.filter((patient) =>
-      patient.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredPatients(results);
-  };
-
-  // Select a patient
-  const handleSelectPatient = (patient) => {
-    setSelectedPatient(patient);
-    setSearchQuery(patient); // enter the name
-    setFilteredPatients([]);
-  };
-
   return (
-    <Box sx={{ border: "1px solid #ddd", padding: "20px", borderRadius: "10px", width: "400px" }}>
+    <Box
+    sx={{
+        border: "1px solid #ddd",
+        padding: "20px",
+        borderRadius: "10px",
+        flex: 1, 
+        display: "flex",
+        flexDirection: "column",
+    }}
+    >
+
       <Typography variant="h6" gutterBottom>
         Patient Information
       </Typography>
 
-      {/* Search Bar */}
-      <TextField
-        label="Search Patient"
-        variant="outlined"
-        fullWidth
-        value={searchQuery}
-        onChange={handleSearchChange}
-        style={{ marginBottom: "10px" }}
+      {/* Patient Name */}
+      <Autocomplete
+        freeSolo 
+        options={patients} // patient List
+        value={selectedPatient} 
+        onChange={(event, newValue) => setSelectedPatient(newValue)} 
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Patient Name"
+            variant="outlined"
+            fullWidth
+            onChange={(e) => setSelectedPatient(e.target.value)} // update patients' name
+            sx={{ marginBottom: "20px" }}
+          />
+        )}
       />
 
-      {filteredPatients.length > 0 ? (
-        <Box
-          sx={{
-            border: "1px solid #ddd",
-            borderRadius: "5px",
-            maxHeight: "150px",
-            overflowY: "auto",
-            marginBottom: "10px",
-          }}
-        >
-          {filteredPatients.map((patient, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: "10px",
-                cursor: "pointer",
-                "&:hover": { backgroundColor: "#f0f0f0" },
-              }}
-              onClick={() => handleSelectPatient(patient)}
-            >
-              {patient}
-            </Box>
-          ))}
-        </Box>
-      ) : searchQuery && (
-        <Typography variant="body2" color="textSecondary" sx={{ marginBottom: "10px" }}>
-          No results found
-        </Typography>
-      )}
-
       {/* Gender */}
-      <FormControl fullWidth variant="outlined" style={{ marginBottom: "10px" }}>
+      <FormControl fullWidth variant="outlined" sx={{ marginBottom: "20px" }}>
         <InputLabel>Gender</InputLabel>
         <Select value={gender} onChange={(e) => setGender(e.target.value)} label="Gender">
           <MenuItem value="Male">Male</MenuItem>
@@ -99,11 +62,6 @@ const PatientInformation = () => {
           <MenuItem value="Others">Others</MenuItem>
         </Select>
       </FormControl>
-
-      {/* Submit */}
-      <Button variant="contained" color="primary" fullWidth>
-        Save Patient
-      </Button>
     </Box>
   );
 };
