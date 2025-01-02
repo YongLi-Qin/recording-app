@@ -1,32 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Box, TextField, Typography, Button, List, ListItem, Divider } from "@mui/material";
 
-const NoteTaking = ({ currentRecordingTime, sx }) => {
-  const [note, setNote] = useState(""); // Current note input
-  const [notes, setNotes] = useState([]); // List of all notes
-  const notesEndRef = useRef(null); // Ref to scroll to the last note
+const NoteTaking = ({ currentRecordingTime, sx, onNotesUpdate }) => {
+  const [note, setNote] = useState("");
+  const [notes, setNotes] = useState([]);
+  const notesEndRef = useRef(null);
 
-  // Add a new note with timestamps
   const handleAddNote = () => {
     if (note.trim() !== "") {
       const currentTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      setNotes((prevNotes) => [
-        ...prevNotes,
+      const newNotes = [
+        ...notes,
         { recordingTime: currentRecordingTime, currentTime, content: note },
-      ]);
-      setNote(""); // Clear input after adding
+      ];
+      setNotes(newNotes);
+      setNote("");
+
+      if (onNotesUpdate) {
+        onNotesUpdate(newNotes);
+      }
     }
   };
 
-  // Trigger adding a note on Enter key press
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleAddNote();
-      e.preventDefault();
-    }
-  };
-
-  // Scroll to the latest note when notes update
   useEffect(() => {
     if (notesEndRef.current) {
       notesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -38,7 +33,6 @@ const NoteTaking = ({ currentRecordingTime, sx }) => {
       sx={{
         border: "1px solid #ddd",
         padding: "20px",
-        width: "800px",
         borderRadius: "10px",
         display: "flex",
         flexDirection: "column",
@@ -49,7 +43,6 @@ const NoteTaking = ({ currentRecordingTime, sx }) => {
       <Typography variant="h6" gutterBottom>
         Notepad
       </Typography>
-      {/* Notes list with scroll */}
       <Box
         sx={{
           flex: 1,
@@ -66,21 +59,18 @@ const NoteTaking = ({ currentRecordingTime, sx }) => {
             <React.Fragment key={index}>
               <ListItem>
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <Typography
-                    variant="caption"
-                    color="textSecondary"
-                  >{`Recording Time: ${noteItem.recordingTime} | Current Time: ${noteItem.currentTime}`}</Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    {`Recording Time: ${noteItem.recordingTime}`}
+                  </Typography>
                   <Typography variant="body1">{noteItem.content}</Typography>
                 </Box>
               </ListItem>
               <Divider />
             </React.Fragment>
           ))}
-          {/* Reference for scrolling */}
           <div ref={notesEndRef} />
         </List>
       </Box>
-      {/* Input for new notes */}
       <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
         <TextField
           label="Enter your note"
@@ -88,7 +78,6 @@ const NoteTaking = ({ currentRecordingTime, sx }) => {
           fullWidth
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          onKeyDown={handleKeyDown}
         />
         <Button variant="contained" color="primary" onClick={handleAddNote}>
           Add Note
@@ -98,4 +87,4 @@ const NoteTaking = ({ currentRecordingTime, sx }) => {
   );
 };
 
-export default NoteTaking;
+export default NoteTaking; 

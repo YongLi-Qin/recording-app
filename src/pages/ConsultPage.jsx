@@ -1,57 +1,66 @@
 import React, { useState } from "react";
 import RecordingControl from "../components/RecordingControl";
 import NoteTaking from "../components/NoteTaking";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import ConsultSummary from "../components/ConsultSummary";
 import PatientInformation from "../components/PatientInformation";
+import { Box } from "@mui/material";
 import { LifeLine } from "react-loading-indicators";
 
 const ConsultPage = () => {
   const [recordingTime, setRecordingTime] = useState("00:00");
-  const [isGenerating, setIsGenerating] = useState(false); // Animation state
+  const [notes, setNotes] = useState([]); // To store notes from NoteTaking
+  const [isGenerating, setIsGenerating] = useState(false); // To control loading animation
+  const [showSummary, setShowSummary] = useState(false); // To toggle between NoteTaking and ConsultSummary
 
   const handleRecordingTimeUpdate = (time) => {
     setRecordingTime(time); // Update recording time
   };
+
+  const handleNotesUpdate = (newNotes) => {
+    setNotes(newNotes); // Update notes from NoteTaking
+  };
+
   const handleStopRecording = () => {
     setIsGenerating(true); // Show loading animation
     setTimeout(() => {
-      setIsGenerating(false); // Hide loading animation after 2 seconds
-    }, 2000); // 2 seconds timeout
+      setIsGenerating(false); // Hide loading animation
+      setShowSummary(true); // Show ConsultSummary
+    }, 2000); // Simulate loading delay
   };
 
   return (
     <Box
       sx={{
         width: "100%",
-        height: "100vh", // Full height of the viewport
-        position: "relative", // To allow absolute positioning for overlay
+        height: "100vh",
+        position: "relative",
         paddingTop: "150px", // Adjust for navbar height
         paddingLeft: "110px",
-        overflow: "hidden"
+        overflow: "hidden",
       }}
     >
+      {/* Loading overlay */}
       {isGenerating && (
         <Box
           sx={{
-            position: "absolute", // Overlay to cover entire screen
+            position: "absolute",
             top: 0,
             left: 0,
             width: "100%",
             height: "100%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center", // Center both horizontally and vertically
-            backgroundColor: "rgba(255, 255, 255, 0.8)", // Optional: Add slight opacity for background
-            zIndex: 1000, // Ensure it appears on top
+            justifyContent: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // Slight opacity
+            zIndex: 1000,
           }}
         >
-          <Box
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            <LifeLine color="#32cd32" size="large" text="Generating Transcript" textColor="" />
-          </Box>
+          <LifeLine
+            color="#32cd32"
+            size="large"
+            text="Generating Transcript"
+            textColor=""
+          />
         </Box>
       )}
 
@@ -60,9 +69,10 @@ const ConsultPage = () => {
         sx={{
           display: "flex",
           gap: "20px",
-          alignItems: "stretch",
+          alignItems: "stretch", // Ensure equal height for both sections
         }}
       >
+        {/* Left Section */}
         <Box
           sx={{
             flex: 1,
@@ -73,20 +83,44 @@ const ConsultPage = () => {
         >
           <RecordingControl
             onTimeUpdate={handleRecordingTimeUpdate}
-            onStop={handleStopRecording} // Pass stop handler to RecordingControl
+            onStop={handleStopRecording}
           />
           <PatientInformation />
         </Box>
+
+        {/* Right Section */}
         <Box
           sx={{
             flex: 2,
             display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <NoteTaking
-            currentRecordingTime={recordingTime}
-            sx={{ flex: 1 }}
-          />
+          {showSummary ? (
+            <ConsultSummary
+              notes={notes} // Pass notes to ConsultSummary
+              sx={{
+                minWidth: "900px",
+                minHeight: "600px",
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                padding: "20px",
+              }}
+            />
+          ) : (
+            <NoteTaking
+              currentRecordingTime={recordingTime} // Pass recording time to NoteTaking
+              onNotesUpdate={handleNotesUpdate} // Correct callback for notes update
+              sx={{
+                minWidth: "800px",
+                minHeight: "600px",
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                padding: "20px",
+              }}
+            />
+          )}
         </Box>
       </Box>
     </Box>
