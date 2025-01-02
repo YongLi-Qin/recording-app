@@ -1,30 +1,44 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaPlay, FaPause } from "react-icons/fa"; 
+import { FaPlay, FaStop } from "react-icons/fa"; // Using react-icons for play and stop icons
+import MenuItem from "@mui/material/MenuItem";
+import { Box, TextField, Typography, Button } from "@mui/material";
 
-const RecordingControl = () => {
+const RecordingControl = ( onTimeUpdate ) => {
   const [isRecording, setIsRecording] = useState(false); 
   const [isPaused, setIsPaused] = useState(false); 
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState("");
   const [volume, setVolume] = useState(0);
-
+  const [recordingTime, setRecordingTime] = useState(0); // Duration of the recording in seconds
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const dataArrayRef = useRef(null);
   const animationFrameIdRef = useRef(null);
   const mediaRecorderRef = useRef(null); 
+  const timerRef = useRef(null); // Reference to interval timer
+
 
   useEffect(() => {
-    const getAudioDevices = async () => {
+    getAudioDevices();
+  }, []);
+
+  /*  Get all the audio devices and make them into a array*/
+  const getAudioDevices = async () => {
+    try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const audioDevices = devices.filter((device) => device.kind === "audioinput");
       setDevices(audioDevices);
       if (audioDevices.length > 0) setSelectedDevice(audioDevices[0].deviceId);
-    };
+    } catch (error) {
+      console.error("Error fetching audio devices: ", error);
+    }
+  };
 
-    getAudioDevices();
-  }, []);
 
+  /* Use  navigator.mediaDevices.getUserMedia to get the audio data from selected devices */
+  /* TODO:
+        Error Handling if there are not input devices (but always have default?)
+  */
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -41,13 +55,28 @@ const RecordingControl = () => {
 
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       dataArrayRef.current = dataArray;
+      
 
+      // start to record
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.start();
       setIsRecording(true);
 
+      // Start recording timer
+      timerRef.current = setInterval(() => {
+        setRecordingTime((prevTime) => {
+          const newTime = prevTime + 1;
+          if (onTimeUpdate) {
+            onTimeUpdate(formatTime(newTime)); // Update parent component with formatted time
+          }
+          return newTime;
+        });
+      }, 1000);
+
+
+      // Volume infor
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
         const volumeLevel = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
@@ -62,6 +91,9 @@ const RecordingControl = () => {
     }
   };
 
+  /* TODO: Add Ending recording and might not need pause can be replace by stop */
+
+
   const pauseRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       if (!isPaused) {
@@ -74,15 +106,6 @@ const RecordingControl = () => {
     }
   };
 
-  const stopRecording = () => {
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      cancelAnimationFrame(animationFrameIdRef.current);
-      setIsRecording(false);
-      setIsPaused(false);
-      setVolume(0);
-    }
-  };
 
   return (
     <div style={{ border: "1px solid #ddd", padding: "20px", borderRadius: "10px", width: "300px" }}>
