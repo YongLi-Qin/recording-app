@@ -16,9 +16,9 @@
     .patient-information {
       padding: 15px;
       border-radius: 5px;
-      min-width: 400px;
-      width: 400px;
-      max-width: 400px;
+      min-width: 300px;
+      width: 300px;
+      max-width: 300px;
 
 
     }
@@ -30,8 +30,8 @@
   @media (min-width: 600px) and (max-width: 959px) {
     .patient-information {
       padding: 15px;
-      min-width: 600px;
-      width: 600px;
+      min-width: 400px;
+      width: 400px;
     }
   }
   
@@ -51,8 +51,8 @@
   
   @media (min-width: 1920px) {
     .patient-information {
-      max-width: 500px;
-      min-width: 500px;
+      max-width: 300px;
+      min-width: 300px;
       margin: 0 auto;
     }
   }

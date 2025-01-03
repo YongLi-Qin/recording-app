@@ -35,15 +35,17 @@
     .recording-control {
       padding: 10px;
       min-width: auto;
-      width: 400px;
+      min-width: 300px;
+      width: 300px;
+      max-width: 300px;
     }
   }
   
   @media (min-width: 600px) and (max-width: 959px) {
     .recording-control {
       padding: 15px;
-      min-width: 600px;
-      width: 600px;
+      min-width: 400px;
+      width: 400px;
     }
   }
   
@@ -56,15 +58,15 @@
   @media (min-width: 1280px) and (max-width: 1919px) {
     .recording-control {
       padding: 25px;
-      width:100%;
-      height: 100%;
+      width:80%;
+      height: 80%;
     }
   }
   
   @media (min-width: 1920px) {
     .recording-control {
-    max-width: 500px;
-    min-width: 500px;
+    max-width: 300px;
+    min-width: 300px;
       margin: 0 auto;
     }
   }
