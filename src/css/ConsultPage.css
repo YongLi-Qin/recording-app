@@ -1,0 +1,110 @@
+/* ConsultPage.css */
+
+/* Container for the entire page */
+.consult-page {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding-top: 100px;
+  overflow: hidden;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+    border-radius: 20px; 
+  }
+  
+  /* Main content container */
+  .main-content {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    border-radius: 20px; 
+  }
+  
+  /* Left section containing controls and patient information */
+  .left-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    border-radius: 20px; 
+  }
+  
+  /* Right section containing note-taking or summary */
+  .right-section {
+    flex: 2;
+    display: flex;
+    border-radius: 20px;
+  }
+
+/* Responsive styles for font size */
+
+@media (max-width: 599px) {
+  .consult-page {
+    font-size: 12px; /* Smallest font for mobile phones */
+    width: 100%;
+    height: 100%;
+    margin-top: -60px;
+    margin-left: 15px;
+  }
+  .main-content {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 959px) {
+    .consult-page {
+        font-size: 12px; /* Smallest font for mobile phones */
+        width: 100%;
+        height: 100%;
+        margin-top: 20px;
+        margin-left:100px;
+      }
+      .main-content {
+        flex-direction: column;
+      }
+
+    .right-section {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    }
+
+}
+
+
+@media (min-width: 1280px) and (max-width: 1919px) {
+  .consult-page {
+    font-size: 20px; /* Larger font for desktops */
+    margin-top: 30px;
+    height: 100%;
+    width: 100%;
+    margin-left: 25%;
+    overflow: hidden;
+  }
+
+}
+
+@media (min-width: 1920px) {
+  .consult-page {
+    font-size: 20px; /* Extra large font for wide screens */
+    height: 100%;
+    width: 100%;
+    margin-left: 30%;
+    overflow: hidden;
+    margin-top: 30px;
+
+  }
+}

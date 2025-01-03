@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Autocomplete, TextField, Button, MenuItem, Select, FormControl, InputLabel, Box, Typography } from "@mui/material";
+import { Autocomplete, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from "@mui/material";
+import "../css/PatientInformation.css"
 
 const PatientInformation = () => {
   const [selectedPatient, setSelectedPatient] = useState("");
   const [gender, setGender] = useState("");
 
-    /* Hardcode patients' name */
+  /* Hardcode patients' name */
   const patients = [
     "Matt L",
     "Jim H",
@@ -20,17 +21,7 @@ const PatientInformation = () => {
   ];
 
   return (
-    <Box
-    sx={{
-        border: "1px solid #ddd",
-        padding: "20px",
-        borderRadius: "10px",
-        flex: 1, 
-        display: "flex",
-        flexDirection: "column",
-    }}
-    >
-
+    <Box className="patient-information">
       <Typography variant="h6" gutterBottom>
         Patient Information
       </Typography>
@@ -47,14 +38,16 @@ const PatientInformation = () => {
             label="Patient Name"
             variant="outlined"
             fullWidth
+            className="patient-information-input"
             onChange={(e) => setSelectedPatient(e.target.value)} // update patients' name
-            sx={{ marginBottom: "20px" }}
           />
         )}
       />
 
+      <Box sx={{ height: "20px" }} /> {/* Spacer between inputs */}
+
       {/* Gender */}
-      <FormControl fullWidth variant="outlined" sx={{ marginBottom: "20px" }}>
+      <FormControl fullWidth variant="outlined" className="patient-information-input">
         <InputLabel>Gender</InputLabel>
         <Select value={gender} onChange={(e) => setGender(e.target.value)} label="Gender">
           <MenuItem value="Male">Male</MenuItem>

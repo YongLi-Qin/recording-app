@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaPlay, FaStop, FaPause } from "react-icons/fa"; // Using react-icons for play, stop, and pause icons
-import { Box, TextField, Typography, Button } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
+import { FaPlay, FaStop, FaPause } from "react-icons/fa";
+import { Box, TextField, Typography, Button, MenuItem } from "@mui/material";
+import "../css/RecordingControl.css";
 
 const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
   const [isRecording, setIsRecording] = useState(false); // Indicates if recording is active
   const [isStopped, setIsStopped] = useState(false); // Indicates if recording is stopped
   const [isPaused, setIsPaused] = useState(false); // Indicates if recording is paused
-  const [devices, setDevices] = useState([]); // List of available audio input devices
+  const [devices, setDevices] = useState([]); // List of audio input devices
   const [selectedDevice, setSelectedDevice] = useState(""); // Selected audio input device
   const [volume, setVolume] = useState(0); // Current volume level
-  const [recordingTime, setRecordingTime] = useState(0); // Duration of the recording in seconds
+  const [recordingTime, setRecordingTime] = useState(0); // Current recording time in seconds
   const audioContextRef = useRef(null); // Reference to AudioContext
-  const analyserRef = useRef(null); // Reference to audio analyser
-  const dataArrayRef = useRef(null); // Reference to data array for analyser
+  const analyserRef = useRef(null); // Reference to AnalyserNode
+  const dataArrayRef = useRef(null); // Reference to audio data array
   const animationFrameIdRef = useRef(null); // Reference to animation frame ID
-  const mediaRecorderRef = useRef(null); // Reference to MediaRecorder instance
-  const timerRef = useRef(null); // Reference to interval timer
+  const mediaRecorderRef = useRef(null); // Reference to MediaRecorder
+  const timerRef = useRef(null); // Reference to recording timer
 
-  // Fetch available audio input devices when the component mounts
+  // Fetch audio input devices on component mount
   useEffect(() => {
     const getAudioDevices = async () => {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -29,14 +29,13 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
     getAudioDevices();
   }, []);
 
-  // Start recording using the selected audio device
+  // Start recording
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: { deviceId: selectedDevice ? { exact: selectedDevice } : undefined },
       });
 
-      // Setup audio context and analyser
       audioContextRef.current = new AudioContext();
       const analyser = audioContextRef.current.createAnalyser();
       analyser.fftSize = 256;
@@ -48,7 +47,6 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       dataArrayRef.current = dataArray;
 
-      // Setup media recorder
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
 
@@ -57,18 +55,18 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
       setIsStopped(false);
       setIsPaused(false);
 
-      // Start recording timer
+      // Timer to update recording time
       timerRef.current = setInterval(() => {
         setRecordingTime((prevTime) => {
           const newTime = prevTime + 1;
           if (onTimeUpdate) {
-            onTimeUpdate(formatTime(newTime)); // Update parent component with formatted time
+            onTimeUpdate(formatTime(newTime));
           }
           return newTime;
         });
       }, 1000);
 
-      // Continuously update volume level
+      // Update volume level
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
         const volumeLevel = dataArray.reduce((acc, val) => acc + val, 0) / dataArray.length;
@@ -83,7 +81,7 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
     }
   };
 
-  // Stop recording and reset the state
+  // Stop recording
   const stopRecording = () => {
     if (audioContextRef.current) {
       audioContextRef.current.close();
@@ -97,14 +95,13 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
         onTimeUpdate("00:00");
       }
 
-      // Notify parent component that recording has stopped
       if (onStop) {
         onStop();
       }
     }
   };
 
-  // Reset recording state
+  // Reset recording
   const resetRecording = () => {
     setRecordingTime(0);
     setIsStopped(false);
@@ -129,14 +126,14 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
       setRecordingTime((prevTime) => {
         const newTime = prevTime + 1;
         if (onTimeUpdate) {
-          onTimeUpdate(formatTime(newTime)); // Update parent component with formatted time
+          onTimeUpdate(formatTime(newTime));
         }
         return newTime;
       });
     }, 1000);
   };
 
-  // Format time from seconds to "MM:SS" format
+  // Format time in MM:SS format
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
@@ -144,23 +141,12 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
   };
 
   return (
-    <Box
-      sx={{
-        border: "1px solid #ddd",
-        padding: "20px",
-        borderRadius: "10px",
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        minWidth: "400px",
-      }}
-    >
+    <Box className="recording-control">
       <Typography variant="h6" gutterBottom>
         Recording Control
       </Typography>
 
-      {/* Recording button and timer display */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+      <Box className="recording-control-header" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Box sx={{ display: "flex", gap: "10px" }}>
           <Button
             onClick={isStopped ? resetRecording : isRecording ? stopRecording : startRecording}
@@ -181,33 +167,16 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
             </Button>
           )}
         </Box>
-        <Typography variant="body1">{formatTime(recordingTime)}</Typography>
+        <Typography variant="body1" sx={{ marginLeft: "20px" }}>{formatTime(recordingTime)}</Typography>
       </Box>
 
-      {/* Volume display */}
-      <div>
+      <div className="volume-section">
         <label>Volume Level:</label>
-        <div
-          style={{
-            width: "100%",
-            height: "10px",
-            backgroundColor: "#ddd",
-            borderRadius: "5px",
-            marginTop: "5px",
-          }}
-        >
-          <div
-            style={{
-              width: `${Math.min(volume, 100)}%`,
-              height: "100%",
-              backgroundColor: "lightblue",
-              transition: "width 0.1s",
-            }}
-          ></div>
+        <div className="volume-bar-container">
+          <div className="volume-bar" style={{ width: `${Math.min(volume, 100)}%` }}></div>
         </div>
       </div>
 
-      {/* Audio input device selection */}
       <TextField
         select
         label="Select Input Device"
@@ -215,7 +184,7 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
         fullWidth
         value={selectedDevice}
         onChange={(e) => setSelectedDevice(e.target.value)}
-        sx={{ marginTop: "20px" }}
+        sx={{ marginTop: "40px" }}
       >
         {devices.map((device) => (
           <MenuItem key={device.deviceId} value={device.deviceId}>

@@ -5,9 +5,10 @@ import ConsultSummary from "../components/ConsultSummary";
 import PatientInformation from "../components/PatientInformation";
 import { Box } from "@mui/material";
 import { LifeLine } from "react-loading-indicators";
+import "../css/ConsultPage.css";
 
 const ConsultPage = () => {
-  const [recordingTime, setRecordingTime] = useState("00:00");
+  const [recordingTime, setRecordingTime] = useState("00:00"); // Current recording time
   const [notes, setNotes] = useState([]); // To store notes from NoteTaking
   const [isGenerating, setIsGenerating] = useState(false); // To control loading animation
   const [showSummary, setShowSummary] = useState(false); // To toggle between NoteTaking and ConsultSummary
@@ -35,32 +36,10 @@ const ConsultPage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        height: "100vh",
-        position: "relative",
-        paddingTop: "150px", // Adjust for navbar height
-        paddingLeft: "110px",
-        overflow: "hidden",
-      }}
-    >
+    <Box className="consult-page">
       {/* Loading overlay */}
       {isGenerating && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.8)", // Slight opacity
-            zIndex: 1000,
-          }}
-        >
+        <Box className="loading-overlay">
           <LifeLine
             color="#32cd32"
             size="large"
@@ -71,61 +50,25 @@ const ConsultPage = () => {
       )}
 
       {/* Main content */}
-      <Box
-        sx={{
-          display: "flex",
-          gap: "20px",
-          alignItems: "stretch", // Ensure equal height for both sections
-        }}
-      >
+      <Box className="main-content">
         {/* Left Section */}
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            gap: "30px",
-          }}
-        >
+        <Box className="left-section">
           <RecordingControl
             onTimeUpdate={handleRecordingTimeUpdate}
             onStop={handleStopRecording}
-            onReset={handleResetRecording} // Add reset callback
+            onReset={handleResetRecording}
           />
           <PatientInformation />
         </Box>
 
         {/* Right Section */}
-        <Box
-          sx={{
-            flex: 2,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <Box className="right-section">
           {showSummary ? (
-            <ConsultSummary
-              notes={notes}
-              sx={{
-                minWidth: "800px",
-                minHeight: "600px",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "20px",
-              }}
-            />
+            <ConsultSummary notes={notes} />
           ) : (
             <NoteTaking
               currentRecordingTime={recordingTime}
               onNotesUpdate={handleNotesUpdate}
-              sx={{
-                minWidth: "800px",
-                minHeight: "600px",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "20px",
-              }}
             />
           )}
         </Box>

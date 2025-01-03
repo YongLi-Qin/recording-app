@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Box, TextField, Typography, Button, List, ListItem, Divider } from "@mui/material";
+import "../css/NoteTaking.css"
+
 
 const NoteTaking = ({ currentRecordingTime, sx, onNotesUpdate }) => {
-  const [note, setNote] = useState("");
-  const [notes, setNotes] = useState([]);
-  const notesEndRef = useRef(null);
+  const [note, setNote] = useState(""); // Current note being typed
+  const [notes, setNotes] = useState([]); // List of all notes
+  const notesEndRef = useRef(null); // Reference to the end of the notes list
 
+  // Add a new note to the list
   const handleAddNote = () => {
     if (note.trim() !== "") {
       const currentTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -22,6 +25,7 @@ const NoteTaking = ({ currentRecordingTime, sx, onNotesUpdate }) => {
     }
   };
 
+  // Automatically scroll to the newest note
   useEffect(() => {
     if (notesEndRef.current) {
       notesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -29,36 +33,16 @@ const NoteTaking = ({ currentRecordingTime, sx, onNotesUpdate }) => {
   }, [notes]);
 
   return (
-    <Box
-      sx={{
-        border: "1px solid #ddd",
-        padding: "20px",
-        borderRadius: "10px",
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-        ...sx,
-      }}
-    >
+    <Box className="note-taking" style={sx}>
       <Typography variant="h6" gutterBottom>
         Notepad
       </Typography>
-      <Box
-        sx={{
-          flex: 1,
-          maxHeight: "400px",
-          overflowY: "auto",
-          border: "1px solid #ddd",
-          borderRadius: "5px",
-          padding: "10px",
-          marginBottom: "10px",
-        }}
-      >
+      <Box className="note-list">
         <List>
           {notes.map((noteItem, index) => (
             <React.Fragment key={index}>
               <ListItem>
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box className="note-item">
                   <Typography variant="caption" color="textSecondary">
                     {`Recording Time: ${noteItem.recordingTime}`}
                   </Typography>
@@ -71,7 +55,7 @@ const NoteTaking = ({ currentRecordingTime, sx, onNotesUpdate }) => {
           <div ref={notesEndRef} />
         </List>
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <Box className="note-input">
         <TextField
           label="Enter your note"
           variant="outlined"
@@ -87,4 +71,4 @@ const NoteTaking = ({ currentRecordingTime, sx, onNotesUpdate }) => {
   );
 };
 
-export default NoteTaking; 
+export default NoteTaking;

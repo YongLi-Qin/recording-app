@@ -1,0 +1,59 @@
+/* PatientInformation.css */
+
+/* Default styles */
+.patient-information {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  /* Responsive styles */
+  
+  @media (max-width: 599px) {
+    .patient-information {
+      padding: 15px;
+      border-radius: 5px;
+      min-width: 400px;
+      width: 400px;
+      max-width: 400px;
+
+
+    }
+    .patient-information-input {
+      margin-bottom: 20px;
+    }
+  }
+  
+  @media (min-width: 600px) and (max-width: 959px) {
+    .patient-information {
+      padding: 15px;
+      min-width: 600px;
+      width: 600px;
+    }
+  }
+  
+  @media (min-width: 960px) and (max-width: 1279px) {
+    .patient-information {
+        padding: 25px;
+
+    }
+  }
+  
+  @media (min-width: 1280px) and (max-width: 1919px) {
+    .patient-information {
+      padding: 25px;
+    }
+
+  }
+  
+  @media (min-width: 1920px) {
+    .patient-information {
+      max-width: 500px;
+      min-width: 500px;
+      margin: 0 auto;
+    }
+  }
+  

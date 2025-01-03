@@ -7,23 +7,15 @@ import theme from "./theme";
 import ConsultPage from "./pages/ConsultPage";
 
 
-
-const OtherModePage = () => <h1>Other Mode Page</h1>;
-const SettingsPage = () => <h1>Settings Page</h1>;
-
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <Navbar />
-        <div style={{ marginTop: "10px", padding: "20px" }}>
           <Routes>
-            <Route path="/consult" element={<ConsultPage />} />
-            <Route path="/other-mode" element={<OtherModePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/" element={<ConsultPage />} />
           </Routes>
-        </div>
       </Router>
     </ThemeProvider>
   );
