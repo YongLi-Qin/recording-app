@@ -162,6 +162,12 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
               variant="contained"
               color="warning"
               startIcon={isPaused ? <FaPlay /> : <FaPause />}
+              sx={{
+                minWidth: "100px", 
+                maxWidth: "100px",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
               {isPaused ? "Resume" : "Pause"}
             </Button>
