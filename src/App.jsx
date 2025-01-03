@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./theme"; 
 import ConsultPage from "./pages/ConsultPage";
 
-
+// Main app
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
