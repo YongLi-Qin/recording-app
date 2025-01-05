@@ -3,8 +3,8 @@ import { Autocomplete, TextField, Select, MenuItem, FormControl, InputLabel, Box
 import "../css/PatientInformation.css"
 
 const PatientInformation = () => {
-  const [selectedPatient, setSelectedPatient] = useState("");
-  const [gender, setGender] = useState("");
+  const [selectedPatient, setSelectedPatient] = useState(""); // Indicates specific patient
+  const [gender, setGender] = useState(""); // Indicates gender
 
   /* Hardcode patients' name */
   const patients = [
