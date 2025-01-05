@@ -11,7 +11,6 @@
   }
   
   /* Responsive styles */
-  
   @media (max-width: 599px) {
     .patient-information {
       padding: 15px;

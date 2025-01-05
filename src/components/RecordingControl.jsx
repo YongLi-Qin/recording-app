@@ -154,7 +154,7 @@ const RecordingControl = ({ onTimeUpdate, onStop, onReset }) => {
             color={isStopped ? "success" : isRecording ? "error" : "primary"}
             startIcon={isRecording ? <FaStop /> : <FaPlay />}
           >
-            {isStopped ? "New Recording" : isRecording ? "End Recording" : "Start Recording"}
+            {isStopped ? "New Recording" : isRecording ? "Stop" : "Start Recording"}
           </Button>
           {isRecording && !isStopped && (
             <Button
